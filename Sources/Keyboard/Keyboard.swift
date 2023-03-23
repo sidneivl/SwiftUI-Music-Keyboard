@@ -75,10 +75,10 @@ public struct Keyboard: View {
                     }
                     Spacer().frame(height: geo.size.height * 0.35)
                 }.zIndex(1)
-                
-//                MultitouchView { touches in
-//                    var _ = print(touches)
-//                }
+            }
+            
+            MultitouchView { touches in
+                keyboardModel.touchLocations = touches
             }
         }
         .onAppear {
