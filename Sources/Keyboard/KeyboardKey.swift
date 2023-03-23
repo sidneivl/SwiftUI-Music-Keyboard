@@ -12,6 +12,8 @@ public struct KeyboardKey: View, Hashable {
     var keyInOctave: Int
     var isBlack: Bool
     
+    let radius = 6.0
+    
     public init(keyNumber: Int) {
         self.keyNumber = keyNumber
         self.keyInOctave = KeyInfo.keyInOctave(keyNumber: keyNumber)
@@ -22,9 +24,14 @@ public struct KeyboardKey: View, Hashable {
         VStack {
             Rectangle()
                 .foregroundColor(isBlack ? .black : .white)
-                .border(.black, width: 0.25)
-                .cornerRadius(6.0)
+                .overlay(
+                    RoundedRectangle(cornerRadius: radius)
+                        .stroke(.black, lineWidth: 0.5)
+                )
+                .cornerRadius(radius)
+                .padding(.top, -radius)
         }
+        .clipped()
     }
 }
 

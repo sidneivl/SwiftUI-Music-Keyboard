@@ -30,7 +30,7 @@ public struct Keyboard: View {
     
     public var body: some View {
         GeometryReader { geo in
-            ZStack {
+            ZStack {                
                 HStack(spacing: 0) {
                     ForEach(keyboardInfo.whiteKeys, id: \.self) { key in
                         key
