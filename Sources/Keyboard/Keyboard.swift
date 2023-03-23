@@ -16,9 +16,6 @@ public struct Keyboard: View {
     public init(firstKey: Int, lastKey: Int) {
         keyboardInfo.firstKey = KeyInfo.keyIsBlack(keyNumber: firstKey) ? firstKey - 1 : firstKey
         keyboardInfo.lastKey = KeyInfo.keyIsBlack(keyNumber: lastKey) ? lastKey + 1 : lastKey
-        
-        print("\(firstKey) | \(keyboardInfo.firstKey)")
-        print("\(lastKey) | \(keyboardInfo.lastKey)")
 
         for i in (keyboardInfo.firstKey...keyboardInfo.lastKey) {
             let key = KeyboardKey(keyNumber: i)
