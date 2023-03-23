@@ -7,23 +7,20 @@
 
 import SwiftUI
 
-public struct KeyboardKey: View, Hashable {
-    var keyNumber: Int
-    var keyInOctave: Int
-    var isBlack: Bool
-    
+public struct KeyboardKey: View {
     let radius = 6.0
     
-    public init(keyNumber: Int) {
-        self.keyNumber = keyNumber
-        self.keyInOctave = KeyInfo.keyInOctave(keyNumber: keyNumber)
-        self.isBlack = KeyInfo.keyIsBlack(keyNumber: keyNumber)
+    @ObservedObject var model: KeyModel
+    @State var keyDown = false
+    
+    public init(model: KeyModel) {
+        self.model = model
     }
     
     public var body: some View {
         VStack {
             Rectangle()
-                .foregroundColor(isBlack ? .black : .white)
+                .foregroundColor(model.isActive ? .red : model.isBlack ? .black : .white)
                 .overlay(
                     RoundedRectangle(cornerRadius: radius)
                         .stroke(.black, lineWidth: 0.5)
@@ -32,11 +29,20 @@ public struct KeyboardKey: View, Hashable {
                 .padding(.top, -radius)
         }
         .clipped()
-    }
-}
-
-struct KeyboardKey_Previews: PreviewProvider {
-    static var previews: some View {
-        KeyboardKey(keyNumber: 2)
+        .gesture(DragGesture(minimumDistance: 0.0, coordinateSpace: .global)
+            .onChanged { _ in
+                if !keyDown {
+                    model.isActive = true
+                    model.noteOn(model)
+                }
+                
+                keyDown = true
+            }
+            .onEnded { _ in
+                keyDown = false
+                model.isActive = false
+                model.noteOff(model)
+            }
+        )
     }
 }

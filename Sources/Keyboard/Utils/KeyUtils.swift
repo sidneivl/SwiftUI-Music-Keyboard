@@ -7,7 +7,7 @@
 
 import Foundation
 
-class KeyInfo {
+class KeyUtils {
     private static let keysInOctave = 12
     private static let baseNoteKey = [0, 2, 4, 5, 7, 9, 11]
     
