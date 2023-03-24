@@ -11,7 +11,6 @@ public struct KeyboardKey: View {
     let radius = 6.0
     
     @ObservedObject var model: KeyModel
-//    @State var keyDown = false
     
     public init(model: KeyModel) {
         self.model = model
@@ -30,21 +29,9 @@ public struct KeyboardKey: View {
                     .padding(.top, -radius)
             }
             .clipped()
-//            .gesture(DragGesture(minimumDistance: 0.0, coordinateSpace: .global)
-//                .onChanged { _ in
-//                    if !keyDown {
-//                        model.isActive = true
-//                        model.noteOn(model)
-//                    }
-//                    
-//                    keyDown = true
-//                }
-//                .onEnded { _ in
-//                    keyDown = false
-//                    model.isActive = false
-//                    model.noteOff(model)
-//                }
-//            )
+            .onChange(of: geo.frame(in: .global)) { _ in
+                model.rectKey = geo.frame(in: .global)
+            }
             .onAppear {
                 model.rectKey = geo.frame(in: .global)
             }
