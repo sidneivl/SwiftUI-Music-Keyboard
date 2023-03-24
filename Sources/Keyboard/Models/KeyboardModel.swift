@@ -16,44 +16,29 @@ public class KeyboardModel: ObservableObject {
     var touchLocations: [CGPoint] = [] {
         didSet {
             let arrayKeys = blackKeys + whiteKeys
-            
-            if touchLocations.isEmpty {
-                for key in arrayKeys {
-                    if key.isActive {
-                        key.noteOff(key)
-                    }
-                    key.isActive = false
-                }
-                return
-            }
+            var arrayTouched: [KeyModel] = []
            
-            // TODO: try improve that
             for location in touchLocations {
-                for key in arrayKeys {
-                    if key.rectKey.contains(location) {
-                        if key.isBlack {
-                            if !key.isActive {
-                                key.noteOn(key)
-                            }
-                            key.isActive = true
-                            for key in whiteKeys {
-                                key.isActive = false
-                            }
-                            return
-                        }
-                        
-                        if !key.isBlack {
-                            if !key.isActive {
-                                key.noteOn(key)
-                            }
-                            key.isActive = true
-                        }
-                    } else {
-                        if key.isActive {
-                            key.noteOff(key)
-                        }
-                        key.isActive = false
+                let keys = arrayKeys.filter( { $0.rectKey.contains(location) } )
+           
+                // Get specific key, verify if isBlack over or white under and make action for just key on top
+                if let key: KeyModel = keys.count > 1 ? keys.first(where: { $0.isBlack } ) : keys.first {
+                    arrayTouched.append(key)
+                    
+                    if !key.isActive {
+                        key.noteOn(key)
                     }
+                    key.isActive = true
+                }
+            }
+            
+            // Check if keys not pressed and relese them
+            for keyRelease in arrayKeys {
+                if arrayTouched.first(where: { $0.keyNumber == keyRelease.keyNumber } ) == nil {
+                    if keyRelease.isActive {
+                        keyRelease.noteOff(keyRelease)
+                    }
+                    keyRelease.isActive = false
                 }
             }
         }
