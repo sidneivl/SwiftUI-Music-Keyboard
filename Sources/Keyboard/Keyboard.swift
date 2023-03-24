@@ -8,17 +8,17 @@ public struct Keyboard: View {
     var noteOn: (_ key: KeyModel) -> Void
     var noteOff: (_ key: KeyModel) -> Void
     
-    @Binding var keyPressed: [Int]
+    var keyPressed: Binding<[Int]>
     
     public init(firstKey: Int,
                 lastKey: Int,
-                keyPressed: Binding<[Int]>,
-                noteOn: @escaping (_ key: KeyModel) -> Void,
-                noteOff: @escaping (_ key: KeyModel) -> Void)
+                keyPressed: Binding<[Int]> = Binding.constant([]),
+                noteOn: @escaping (_ key: KeyModel) -> Void = { _ in },
+                noteOff: @escaping (_ key: KeyModel) -> Void = { _ in })
     {
         self.firstKey = firstKey
         self.lastKey = lastKey
-        self._keyPressed = keyPressed
+        self.keyPressed = keyPressed
         self.noteOn = noteOn
         self.noteOff = noteOff
     }
@@ -41,9 +41,8 @@ public struct Keyboard: View {
     }
     
     private func setKeysPressed() {
-        // TODO: check if is better solution for performance
         for i in (keyboardModel.firstKey...keyboardModel.lastKey) {
-            keyboardModel.keyPressed(i, keyPressed.contains(i) ? true : false)
+            keyboardModel.keyPressed(i, keyPressed.wrappedValue.contains(i) ? true : false)
         }
     }
     
@@ -85,7 +84,7 @@ public struct Keyboard: View {
             setModel()
             setKeysPressed()
         }
-        .onChange(of: $keyPressed.wrappedValue, perform: { value in
+        .onChange(of: keyPressed.wrappedValue, perform: { value in
             setKeysPressed()
         })
     }
