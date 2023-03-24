@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct Keyboard: View {
-    @ObservedObject public var keyboardModel: KeyboardModel = .init()
+    @StateObject public var keyboardModel: KeyboardModel = .init()
     
     var firstKey: Int
     var lastKey: Int
