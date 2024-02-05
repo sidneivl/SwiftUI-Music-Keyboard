@@ -2,7 +2,7 @@
 
 Using SwiftUI I've created this simple keyboard to a singular personal project and share it you you.
 
-![keybard_playing](https://gist.github.com/assets/5385276/a4281b98-4d22-4cb3-919c-1a27d03b7a92)
+![keybard_playing](https://github.com/sidneivl/SwiftUI-Music-Keyboard/assets/5385276/0273638f-d3eb-414a-849d-33256affebb2)
 
 ## The features are
 
@@ -59,7 +59,7 @@ struct KeyboardView: View {
 }
 ````
 
-![Simulator Screenshot - iPhone 15 Pro - 2024-02-05 at 17 40 14](https://gist.github.com/assets/5385276/9fc774ca-1559-4b38-b854-dcb5ac6753ea)
+![key_pressed](https://github.com/sidneivl/SwiftUI-Music-Keyboard/assets/5385276/b5d4776c-1dbe-4f71-828c-c8906f565271)
 
 ### Capturing the key pressed
 
