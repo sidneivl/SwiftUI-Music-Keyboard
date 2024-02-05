@@ -7,29 +7,34 @@
 
 import SwiftUI
 
-public struct KeyboardKey: View, Hashable {
-    var keyNumber: Int
-    var keyInOctave: Int
-    var isBlack: Bool
+public struct KeyboardKey: View {
+    let radius = 6.0
     
-    public init(keyNumber: Int) {
-        self.keyNumber = keyNumber
-        self.keyInOctave = KeyInfo.keyInOctave(keyNumber: keyNumber)
-        self.isBlack = KeyInfo.keyIsBlack(keyNumber: keyNumber)
+    @ObservedObject var model: KeyModel
+    
+    public init(model: KeyModel) {
+        self.model = model
     }
     
     public var body: some View {
-        VStack {
-            Rectangle()
-                .foregroundColor(isBlack ? .black : .white)
-                .border(.black, width: 0.25)
-                .cornerRadius(6.0)
+        GeometryReader { geo in
+            VStack {
+                Rectangle()
+                    .foregroundColor(model.isActive ? .red : model.isBlack ? .black : .white)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: radius)
+                            .stroke(.black, lineWidth: 0.5)
+                    )
+                    .cornerRadius(radius)
+                    .padding(.top, -radius)
+            }
+            .clipped()
+            .onChange(of: geo.frame(in: .global)) { _ in
+                model.rectKey = geo.frame(in: .global)
+            }
+            .onAppear {
+                model.rectKey = geo.frame(in: .global)
+            }
         }
-    }
-}
-
-struct KeyboardKey_Previews: PreviewProvider {
-    static var previews: some View {
-        KeyboardKey(keyNumber: 2)
     }
 }

@@ -8,16 +8,16 @@
 import Foundation
 
 class KeyBlackSpace {
-    static func getSpacerLeft(keyboardInfo: KeyboardInfo, key: KeyboardKey, widthStage: CGFloat) -> CGFloat {
-        let whiteKeyWidth = widthStage / CGFloat(keyboardInfo.whiteKeys.count)
-        let blackKeyWidth = whiteKeyWidth * (keyboardInfo.blackKeyProportion)
+    static func getSpacerLeft(keyboardModel: KeyboardModel, key: KeyModel, widthStage: CGFloat) -> CGFloat {
+        let whiteKeyWidth = widthStage / CGFloat(keyboardModel.whiteKeys.count)
+        let blackKeyWidth = whiteKeyWidth * (keyboardModel.blackKeyProportion)
         
         // Space for first key
-        if key.keyNumber - 1 == keyboardInfo.firstKey {
+        if key.keyNumber - 1 == keyboardModel.firstKey {
             return whiteKeyWidth - blackKeyWidth / 2
         }
         
-        if key.keyNumber - 2 == keyboardInfo.firstKey {
+        if key.keyNumber - 2 == keyboardModel.firstKey {
             return (whiteKeyWidth * 2) - (blackKeyWidth / 2)
         }
         
@@ -25,11 +25,11 @@ class KeyBlackSpace {
         if key.keyInOctave == 1 || key.keyInOctave == 6 {
             return (whiteKeyWidth - blackKeyWidth / 2) * 2
         } else {
-            return whiteKeyWidth * (1 - keyboardInfo.blackKeyProportion)
+            return whiteKeyWidth * (1 - keyboardModel.blackKeyProportion)
         }
     }
     
-    static func getSpaceRight(keyboardInfo: KeyboardInfo, key: KeyboardKey, widthStage: CGFloat) -> CGFloat {
+    static func getSpaceRight(keyboardInfo: KeyboardModel, key: KeyModel, widthStage: CGFloat) -> CGFloat {
         let whiteKeyWidth = widthStage / CGFloat(keyboardInfo.whiteKeys.count)
         let blackKeyWidth = whiteKeyWidth * keyboardInfo.blackKeyProportion
         

@@ -1,60 +1,91 @@
 import SwiftUI
 
-struct KeyboardInfo {
-    let blackKeyProportion: CGFloat = 0.7
-    
-    var firstKey: Int = 21
-    var lastKey: Int = 108
-    
-    var whiteKeys: [KeyboardKey] = []
-    var blackKeys: [KeyboardKey] = []
-}
-
 public struct Keyboard: View {
-    private var keyboardInfo = KeyboardInfo()
+    @StateObject public var keyboardModel: KeyboardModel = .init()
     
-    public init(firstKey: Int, lastKey: Int) {
-        keyboardInfo.firstKey = KeyInfo.keyIsBlack(keyNumber: firstKey) ? firstKey - 1 : firstKey
-        keyboardInfo.lastKey = KeyInfo.keyIsBlack(keyNumber: lastKey) ? lastKey + 1 : lastKey
-
-        for i in (keyboardInfo.firstKey...keyboardInfo.lastKey) {
-            let key = KeyboardKey(keyNumber: i)
+    var firstKey: Int
+    var lastKey: Int
+    var noteOn: (_ key: KeyModel) -> Void
+    var noteOff: (_ key: KeyModel) -> Void
+    
+    var keyPressed: Binding<[Int]>
+    
+    public init(firstKey: Int,
+                lastKey: Int,
+                keyPressed: Binding<[Int]> = Binding.constant([]),
+                noteOn: @escaping (_ key: KeyModel) -> Void = { _ in },
+                noteOff: @escaping (_ key: KeyModel) -> Void = { _ in })
+    {
+        self.firstKey = firstKey
+        self.lastKey = lastKey
+        self.keyPressed = keyPressed
+        self.noteOn = noteOn
+        self.noteOff = noteOff
+    }
+    
+    private func setModel() {
+        keyboardModel.firstKey = KeyUtils.keyIsBlack(keyNumber: firstKey) ? firstKey - 1 : firstKey
+        keyboardModel.lastKey = KeyUtils.keyIsBlack(keyNumber: lastKey) ? lastKey + 1 : lastKey
+    
+        for i in (keyboardModel.firstKey...keyboardModel.lastKey) {
+            let key = KeyModel(keyNumber: i)
+            key.noteOn = self.noteOn
+            key.noteOff = self.noteOff
 
             if key.isBlack {
-                keyboardInfo.blackKeys.append(key)
+                keyboardModel.blackKeys.append(key)
             } else {
-                keyboardInfo.whiteKeys.append(key)
+                keyboardModel.whiteKeys.append(key)
             }
         }
     }
     
+    private func setKeysPressed() {
+        for i in (keyboardModel.firstKey...keyboardModel.lastKey) {
+            keyboardModel.keyPressed(i, keyPressed.wrappedValue.contains(i) ? true : false)
+        }
+    }
+    
+    private func getKeyWidth(_ geoWidth: CGFloat) -> CGFloat {
+        let keysCount = CGFloat(keyboardModel.whiteKeys.count)
+        let keyboardProportion = keyboardModel.blackKeyProportion
+        return geoWidth / keysCount * keyboardProportion
+    }
+    
     public var body: some View {
         GeometryReader { geo in
-            ZStack {
+            ZStack {                
                 HStack(spacing: 0) {
-                    ForEach(keyboardInfo.whiteKeys, id: \.self) { key in
-                        key
+                    ForEach(keyboardModel.whiteKeys) { keyModel in
+                        KeyboardKey(model: keyModel)
                     }
                 }.zIndex(0)
 
                 VStack(alignment: .leading) {
                     HStack(alignment: .top, spacing: 0) {
-                        ForEach(keyboardInfo.blackKeys, id: \.self) { key in
-                            Rectangle().opacity(0).frame(width: KeyBlackSpace.getSpacerLeft(keyboardInfo: keyboardInfo, key: key, widthStage: geo.size.width))
+                        ForEach(keyboardModel.blackKeys) { keyModel in
+                            Rectangle().opacity(0).frame(width: KeyBlackSpace.getSpacerLeft(keyboardModel: keyboardModel, key: keyModel, widthStage: geo.size.width))
+                            KeyboardKey(model: keyModel)
 
-                            let keysCount = CGFloat(keyboardInfo.whiteKeys.count)
-                            let keyboardProportion = keyboardInfo.blackKeyProportion
-                            let widthKey = geo.size.width / keysCount * keyboardProportion
-                            key.frame(width: widthKey)
-
-                            if key.keyNumber + 1 == keyboardInfo.lastKey || key.keyNumber + 2 == keyboardInfo.lastKey {
-                                Rectangle().opacity(0).frame(width: KeyBlackSpace.getSpaceRight(keyboardInfo: keyboardInfo, key: key, widthStage: geo.size.width))
+                            if keyModel.keyNumber + 1 == keyboardModel.lastKey || keyModel.keyNumber + 2 == keyboardModel.lastKey {
+                                Rectangle().opacity(0).frame(width: KeyBlackSpace.getSpaceRight(keyboardInfo: keyboardModel, key: keyModel, widthStage: geo.size.width))
                             }
                         }
                     }
                     Spacer().frame(height: geo.size.height * 0.35)
                 }.zIndex(1)
             }
+            
+            MultitouchView { touches in
+                keyboardModel.touchLocations = touches
+            }
         }
+        .onAppear {
+            setModel()
+            setKeysPressed()
+        }
+        .onChange(of: keyPressed.wrappedValue, perform: { value in
+            setKeysPressed()
+        })
     }
 }
