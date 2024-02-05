@@ -1,6 +1,6 @@
 # SwiftUI-Music-Keyboard
 
-Using SwiftUI I've created this simple keyboard to a singular personal project and share it you you.
+Using SwiftUI, I've created this simple keyboard for a singular personal project and I'd like to share it with you.
 
 ![keybard_playing](https://github.com/sidneivl/SwiftUI-Music-Keyboard/assets/5385276/0273638f-d3eb-414a-849d-33256affebb2)
 
@@ -8,7 +8,7 @@ Using SwiftUI I've created this simple keyboard to a singular personal project a
 
 - multi-touch interface
 - not just limited to octaves, any number of notes could be used.
-- easy to use with external source of notes like MIDI files and MIDI ports
+- easy to use with external source of notes, such as MIDI files and MIDI ports.
 
 ## Install
 
@@ -38,13 +38,13 @@ struct KeyboardView: View {
 }
 ```
 
-You can set first key and last key for your keyboard, by default, MIDI keybards that represent pianos start key in 21 and end in 108.
+You can set the first and last key for your keyboard. By default, MIDI keyboards representing pianos start at key 21 and end at key 108.
 
-It will set all necessary keys to play in visual keyboard.
+This will set all the necessary keys to play on the visual keyboard.
 
 ### Set key pressed
 
-The parameter keyPressed is a Binding array for keys numbers that you need to show pressed on keyboard.
+The parameter **keyPressed** is a Binding array for key numbers that need to be shown as pressed on the keyboard.
 
 ```swift
 import SwiftUI
@@ -63,9 +63,9 @@ struct KeyboardView: View {
 
 ### Capturing the key pressed
 
-If you are acquainted with how MIDI keyboard works you know that is key pressed and key released fired all the time.
+If you are familiar with how MIDI keyboards works, you know that key pressed and key released eventes are fired continuously.
 
-To cpature this information you heve two parameters on the contructor: noteOn (for pressed keys) and noteOff (for keys just released) where both recive a listener.
+To capture this information you heve two parameters in the contructor: noteOn (for pressed keys) and noteOff (for keys just released), both receiving a listener.
 
 ```swift
 import SwiftUI
@@ -83,7 +83,7 @@ struct KeyboardView: View {
     }
 }
 ```
-Listeners receive a key KeyModel where there are two parameters:
+Listeners receive a key **KeyModel** object which contains two parameters:
 
 - keyNumber - Reference number on keyboard
 - id - The SwiftUI id
